@@ -1,1 +1,4 @@
 jquery.bxslider.zip
+node_modules
+bower_components
+*.swp

@@ -35,6 +35,7 @@
 		responsive: true,
 		slideZIndex: 50,
 		wrapperClass: 'bx-wrapper',
+		interchange_load_attr: 'interchange', // Foundation Interchange compatibility
 
 		// TOUCH
 		touchEnabled: true,
@@ -264,6 +265,9 @@
 			}else{
 				slider.settings.pager = false;
 			}
+			
+			fixForInterchange();
+			
 			// preload all images, then perform final DOM / CSS modifications that depend on images being loaded
 			loadElements(preloadSelector, start);
 		}
@@ -282,6 +286,38 @@
 				  if(this.complete) $(this).load();
 				});
 			});
+		}
+		
+		// Check for interchange specific data attributes,
+		// Fix image sources, if found
+		var fixForInterchange = function() {
+			
+			slider.children.find("img").each(function(){
+				var interchangeData = $(this).data(slider.settings.interchange_load_attr).trim();
+				var imgOrigSrc = $(this).attr("src").trim();
+				if(interchangeData.length > 0) {
+					var raw = interchangeData.split(/\[(.*?)\]/);
+					var count = raw.length;
+					var output = [], rulesArr = [];
+					
+					for(var i = count - 1; i >= 0; i--) {
+						if (raw[i].replace(/[\W\d]+/, "").length > 4) {
+							rulesArr.push(raw[i].split(','));
+						}
+					}
+					console.log(rulesArr);
+					var rulesLen = rulesArr.length;
+					for(var i = rulesLen - 1; i >= 0; i--) {
+						var trimmedRule = $.trim(rulesArr[i][1]);
+						trimmedRule = trimmedRule.substring(1,trimmedRule.length - 1);
+						//console.log(trimmedRule);
+						if(window.matchMedia(trimmedRule).matches) {
+							$(this).attr('src',$.trim(rulesArr[i][0]));
+						}
+					}
+				}
+			});
+			
 		}
 
 		/**
@@ -1300,6 +1336,8 @@
 				populatePager();
 				updatePagerActive(slider.active.index);
 			}
+			
+			fixForInterchange();
 		}
 
 		/**

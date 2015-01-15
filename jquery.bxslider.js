@@ -36,6 +36,20 @@
 		slideZIndex: 50,
 		wrapperClass: 'bx-wrapper',
 		interchange_load_attr: 'interchange', // Foundation Interchange compatibility
+		interchange_named_queries: {
+			'default' : 'only screen and (min-width: 1px)',
+			small : 'only screen and (min-width: 768px)',
+			medium : 'only screen and (min-width: 1280px)',
+			large : 'only screen and (min-width: 1440px)',
+			landscape : 'only screen and (orientation: landscape)',
+			portrait : 'only screen and (orientation: portrait)',
+			retina : 'only screen and (-webkit-min-device-pixel-ratio: 2),' + 
+			'only screen and (min--moz-device-pixel-ratio: 2),' + 
+			'only screen and (-o-min-device-pixel-ratio: 2/1),' + 
+			'only screen and (min-device-pixel-ratio: 2),' + 
+			'only screen and (min-resolution: 192dpi),' + 
+			'only screen and (min-resolution: 2dppx)'
+		},
 
 		// TOUCH
 		touchEnabled: true,
@@ -308,9 +322,14 @@
 					
 					var rulesLen = rulesArr.length;
 					for(var i = rulesLen - 1; i >= 0; i--) {
-						var trimmedRule = $.trim(rulesArr[i][1]);
+						var mq, trimmedRule = $.trim(rulesArr[i][1]);
 						trimmedRule = trimmedRule.substring(1,trimmedRule.length - 1);
-						if(window.matchMedia(trimmedRule).matches) {
+						if(slider.settings.interchange_named_queries.hasOwnProperty(trimmedRule)){
+							mq = window.matchMedia(slider.settings.interchange_named_queries[trimmedRule]);
+						} else {
+							mq = window.matchMedia(trimmedRule);
+						}
+						if(mq.matches) {
 							$(this).attr('src',$.trim(rulesArr[i][0]));
 						}
 					}

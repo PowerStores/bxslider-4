@@ -312,7 +312,7 @@
 				if(interchangeData.length > 0) {
 					var raw = interchangeData.split(/\[(.*?)\]/);
 					var count = raw.length;
-					var output = [], rulesArr = [];
+					var rulesArr = [];
 					
 					for(var i = count - 1; i >= 0; i--) {
 						if (raw[i].replace(/[\W\d]+/, "").length > 4) {
